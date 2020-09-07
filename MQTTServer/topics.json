@@ -1,0 +1,14 @@
+{
+  "alarm_clock":
+  {
+    "time": "set_alarm_time"
+  },
+    "lights1":
+  {
+    "color": "set_color",
+    "mode": "set_mode",
+    "power": "set_power"
+  }
+}
+
+
