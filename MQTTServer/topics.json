@@ -1,13 +1,11 @@
 {
-  "alarm_clock":
+  "broker":
   {
-    "time": "set_alarm_time"
-  },
-    "lights1":
-  {
-    "color": "set_color",
-    "mode": "set_mode",
-    "power": "set_power"
+    "alarm_clock":
+    [
+      "time",
+      "mode"
+    ]
   }
 }
 

@@ -17,7 +17,7 @@ class AlarmClock:
 
     print("New Alarm Clock created")
 
-  def set_alarm_time(self, time=alarm_time, days=alarm_days, wakeup_interval=2):
+  def set_alarm_time(self, time=ALARM_TIME, days=ALARM_DAYS, wakeup_interval=2):
     """
       The set_alarm_time function creates a cron job to run at the specified time on the specified days.
       The wakeup_interval defines the period over which the user will be woken up. Functionality for this will

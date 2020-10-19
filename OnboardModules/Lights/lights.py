@@ -2,8 +2,9 @@ import time
 from random import randint
 from rpi_ws281x import Color, PixelStrip
 
-# Define the default IO pin and number of pixels in the LED array
-GPIO_PIN   = 18
+# Define the default IO pin and number of pixels in the LED array. GPIO_PIN is 10 because the onboard
+# PWM chip is needed for audio output.
+GPIO_PIN   = 10 
 NUM_PIXELS = 1
 
 class Lights:
@@ -19,9 +20,22 @@ class Lights:
     """
 
     self.num_pixels = num_pixels
-    self.strip      = PixelStrip(self.num_pixels, 18)
+    self.strip      = PixelStrip(self.num_pixels, GPIO_PIN)
     self.power      = False
     self.strip.begin()
+
+  def set_mode(self, mode):
+    """
+      Set the mode of the lights.
+    """
+
+    mode = mode.lower
+    if mode == "arcade":
+      arcade(3600)
+    elif mode == "ambient":
+      ambient(3600)
+    elif mode == "christmas":
+      christmas(3600)
 
   def clear(self):
     """
@@ -46,14 +60,14 @@ class Lights:
     try:
       while curr_time < duration:
         for i in range(0, self.num_pixels):
-          strip.setPixelColor(i, Color(255, 255, 255))
+          self.strip.setPixelColor(i, Color(255, 255, 255))
           # this conditional handles whether the first light is turned on or not; if the first light is on,
           # then the last light must be powered off
           if i > 0:
-            strip.setPixelColor(i-1, Color(0, 0, 0))
+            self.strip.setPixelColor(i-1, Color(0, 0, 0))
           else:
-            strip.setPixelColor(self.num_pixels - 1, Color(0, 0, 0))
-          strip.show()
+            self.strip.setPixelColor(self.num_pixels - 1, Color(0, 0, 0))
+          self.strip.show()
           time.sleep(delay)
           curr_time += delay
     finally:

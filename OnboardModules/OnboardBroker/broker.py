@@ -1,13 +1,8 @@
 import json
 import paho.mqtt.client as mqtt
-from rpi_ws281x import *
-import time
-# from Lights.lights import Lights
-# from AlarmClock.alarmClock import AlarmClock
+from change_manager import ChangeManager
 
-actions = {}
-# lights = Lights(5)
-# alarmClock = AlarmClock()
+change_mgr = ChangeManager()
 
 def subscribe_to_topics():
   """
@@ -17,21 +12,17 @@ def subscribe_to_topics():
     defines the action taken when a message is received.
   """
 
-  global actions
-
-  with open('/home/pi/raspberry-pi/MQTTServer/topics.json') as f:
+  with open('/home/pi/raspberry-pi/OnboardModules/OnboardBroker/topics.json') as f:
     topics = json.load(f)
   
   # define a list of topics to subscribe to and their respective actions
-  for dest in topics:
-      if topics[dest]:
-        for dev in topics[dest]:
-          if topics[dest][dev]:
-            for param in topics[dest][dev]:
-              # subscribe to the topic
-              subscription = dest + "/" + dev + "/" + param
-              print("Subscribing to: " + subscription)
-              client.subscribe(subscription)
+  for dev in topics:
+      if topics[dev]:
+        for param in topics[dev]:
+          # subscribe to the topic
+          subscription = dev + "/" + param
+          print("Subscribing to: " + subscription)
+          client.subscribe(subscription)
 
 def on_connect(client, userdata, flags, rc):
   """
@@ -45,15 +36,18 @@ def on_message(client, userdata, message):
     Define what happens when a message is received.
   """
 
+  global change_mgr
+
   subscription = message.topic
   action_data  = message.payload
   print("Message received: {} - {}".format(subscription, action_data))
 
   # TODO
   # call the appropriate function
-  subscription = subscription.replace("broker/", "", 1)
-  client.publish(subscription, action_data)
-  print("Sent message: {} with data: {}".format(subscription, action_data))
+  var = subscription.split('/')[1]
+  action_data = action_data.decode('UTF-8')
+  print("Changing {} to {}".format(var, action_data))
+  change_mgr.set_change(var, action_data)
 
 if __name__ == "__main__":
 
